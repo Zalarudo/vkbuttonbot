@@ -5,14 +5,16 @@ ini_set('display_startup_errors', 1);
 
 
 require_once './vendor/autoload.php';
-$token = '61ca346dfccd75afa801ae21bb6991023248bb225c1d1b9b1606affc1f19329b250bb73dd1901dc8dc2aa';
+$token = 'myToken';
+//подключение вк
 use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
-
+//обработчик ошибок
 function myLog($str)
 {
     file_put_contents("php://stdout", "$str\n");
 }
+//цвета и данные для кнопок
 const COLOR_NEGATIVE = 'negative';
 const COLOR_POSITIVE = 'positive';
 const COLOR_DEFAULT = 'default';
@@ -22,6 +24,7 @@ const CMD_NAME = 'NAME';
 const CMD_NEXT = 'NEXT';
 const CMD_TYPING = 'TYPING';
 const CMD_JOKE = 'JOKE';
+//функция создания кнопок
 function getBtn($label, $color, $payload = '')
 {
     return [
@@ -38,10 +41,12 @@ $json = file_get_contents('php://input');
 //myLog($json);
 $data = json_decode($json, true);
 $type = $data['type'] ?? '';
+//создание класса вк
 $vk = new VKApiClient('5.85', VKLanguage::RUSSIAN);
 
-
+//обработка входящих запросов
 if ($type === 'message_new') {
+    //получение данных от запроса
     $message = $data['object'] ?? [];
     $userId = $message['user_id'] ?? $message['peer_id'];
     $userInfo = json_decode(file_get_contents("https://api.vk.com/method/users.get?user_ids={$userId}&access_token={$token}&v=5.85"));
@@ -52,6 +57,7 @@ if ($type === 'message_new') {
         $payload = json_decode($payload, true);
     }
     myLog("MSG: " . $body . " PAYLOAD:" . $payload);
+    //здесь и далее - создание клавиатуры
     $kbd = [
         'one_time' => false,
         'buttons' => [
@@ -61,6 +67,7 @@ if ($type === 'message_new') {
             [getBtn("Пришли котика", COLOR_PRIMARY, 'cat')]
         ]
     ];
+    //стандартное сообщение и вложение
     $msg = "Привет я бот!";
     $attach='';
     if ($payload === CMD_NAME) {
@@ -115,6 +122,7 @@ if ($type === 'message_new') {
             myLog($e->getCode() . ' ' . $e->getMessage());
         }
     }
+    //ответ в вк с помощью метода message.send
     try {
         if ($msg !== null) {
             $response = $vk->messages()->send($token, [
@@ -128,6 +136,7 @@ if ($type === 'message_new') {
     } catch (\Exception $e) {
         myLog($e->getCode() . ' ' . $e->getMessage());
     }
+    //обязательный ответ в вк, чтобы он не спамил запросами
     echo ("ok");
 
 }
