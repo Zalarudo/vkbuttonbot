@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 
 
 require_once './vendor/autoload.php';
-$token = 'myToken';
+$token = 'mySecureToken';
 //подключение вк
 use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
