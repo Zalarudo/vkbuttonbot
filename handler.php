@@ -40,22 +40,29 @@ function getBtn($label, $color, $payload = '')
 $json = file_get_contents('php://input');
 //myLog($json);
 $data = json_decode($json, true);
+
 $type = $data['type'] ?? '';
-//создание класса вк
+
 $vk = new VKApiClient('5.85', VKLanguage::RUSSIAN);
 
 //обработка входящих запросов
 if ($type === 'message_new') {
     //получение данных от запроса
     $message = $data['object'] ?? [];
+    
     $userId = $message['user_id'] ?? $message['peer_id'];
+    
     $userInfo = json_decode(file_get_contents("https://api.vk.com/method/users.get?user_ids={$userId}&access_token={$token}&v=5.85"));
+   
     $user_name = $userInfo->response[0]->first_name;
     $body = $message['body'] ?? '';
+    
     $payload = $message['payload'] ?? '';
+    
     if ($payload) {
         $payload = json_decode($payload, true);
     }
+    
     myLog("MSG: " . $body . " PAYLOAD:" . $payload);
     //здесь и далее - создание клавиатуры
     $kbd = [
@@ -80,9 +87,10 @@ if ($type === 'message_new') {
             ]
         ];
     }
+    
     if($payload === 'cat'){
         $msg = 'Вот изящный котик';
-       $attach = 'photo-189680340_457239019';
+        $attach = 'photo-189680340_457239019';
         $kbd = [
             'one_time' => false,
             'buttons' => [
@@ -102,7 +110,8 @@ if ($type === 'message_new') {
             ]
         ];
 
-    }    if ($payload === CMD_NEXT) {
+    }    
+    if ($payload === CMD_NEXT) {
         $kbd = [
             'one_time' => false,
             'buttons' => [
