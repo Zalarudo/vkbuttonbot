@@ -8,7 +8,7 @@ require_once './vendor/autoload.php';
 
 
 
-$datakonv = file_get_contents("https://konverbot.net/chatbot/novyj-chat-bot-72/?skey=b929a3af31a2c4d3ab72be8706f2ab46&test_export_json");
+$datakonv = file_get_contents("");
 
 
 $decdata = json_decode($datakonv);
