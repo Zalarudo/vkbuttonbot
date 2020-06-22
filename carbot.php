@@ -16,7 +16,7 @@ $decdata = json_decode($datakonv);
 $quest = $decdata -> konverbot_questions;
 
 
-$token = '61ca346dfccd75afa801ae21bb6991023248bb225c1d1b9b1606affc1f19329b250bb73dd1901dc8dc2aa';
+$token = '';
 use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
 function myLog($str)
